@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Daftar Laporan</title>
+
+<style>
+body{
+    font-family: Arial;
+    background: linear-gradient(135deg,#ffd6e8,#d6e8ff);
+    margin:0;
+}
+
+/* container */
+.container{
+    width:70%;
+    margin:50px auto;
+    background:white;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0px 10px 25px rgba(0,0,0,0.2);
+}
+
+/* tombol kembali */
+.back-btn{
+    display:inline-block;
+    margin-bottom:20px;
+    background:#5c8df6;
+    color:white;
+    padding:10px 15px;
+    border-radius:10px;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+.back-btn:hover{
+    background:#3f6edc;
+}
+
+/* CARD BESAR */
+.card{
+    background:#fff;
+    padding:20px;
+    margin:20px 0;
+    border-radius:15px;
+    box-shadow:0px 5px 15px rgba(0,0,0,0.1);
+}
+
+/* JUDUL */
+.title{
+    font-size:20px;
+    font-weight:bold;
+    color:#ff6fa5;
+    margin-bottom:10px;
+}
+
+/* BOX KECIL DETAIL */
+.box{
+    background:#f8f8f8;
+    padding:10px;
+    margin:5px 0;
+    border-radius:10px;
+}
+
+/* tombol */
+.btn{
+    text-decoration:none;
+    padding:6px 12px;
+    border-radius:8px;
+    color:white;
+}
+
+.edit{ background:#5c8df6; }
+.delete{ background:#ff6fa5; }
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<a href="/" class="back-btn">← Kembali</a>
+
+<h2>Daftar Laporan</h2>
+
+{% for report in reports %}
+<div class="card">
+
+    <div class="title">{{ report.title }}</div>
+
+    <div class="box"><b>Kategori:</b> {{ report.category }}</div>
+    <div class="box"><b>Lokasi:</b> {{ report.location }}</div>
+    <div class="box"><b>Deskripsi:</b> {{ report.description }}</div>
+
+    <br>
+
+    <a href="/update/{{ report.id }}/" class="btn edit">Edit</a>
+
+    <a href="/delete/{{ report.id }}/"
+       class="btn delete"
+       onclick="return confirm('Yakin mau hapus laporan ini?');">
+       Hapus
+    </a>
+
+</div>
+
+{% empty %}
+<p>Belum ada laporan</p>
+{% endfor %}
+
+</div>
+
+</body>
+</html>

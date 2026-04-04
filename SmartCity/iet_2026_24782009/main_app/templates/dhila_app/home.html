@@ -8,15 +8,14 @@ body{
     font-family: Arial, sans-serif;
     margin:0;
     padding:0;
-    text-align:center;
     background: linear-gradient(135deg,#ffd6e8,#d6e8ff);
-    height:100vh;
 }
 
 /* navbar */
 .navbar{
     background:white;
     padding:15px;
+    text-align:center;
     box-shadow:0px 2px 10px rgba(0,0,0,0.1);
 }
 
@@ -27,27 +26,44 @@ body{
     color:#ff6fa5;
 }
 
+/* container */
 .container{
     background:white;
-    margin:80px auto;
+    margin:40px auto;
     padding:40px;
     width:60%;
     border-radius:20px;
     box-shadow:0px 10px 25px rgba(0,0,0,0.15);
+    text-align:center;
 }
 
-h1{
-    color:#ff6fa5;
-}
-
-p{
-    color:#444;
-    font-size:18px;
-}
-
+/* list masalah */
 .list{
-    font-size:18px;
+    text-align:left;
+    width:60%;
+    margin:0 auto;
     line-height:2;
+}
+
+/* tombol area */
+.button-group{
+    margin-top:30px;
+}
+
+/* tombol */
+.btn{
+    background:#ff6fa5;
+    color:white;
+    padding:12px 20px;
+    border-radius:25px;
+    text-decoration:none;
+    font-weight:bold;
+    margin:10px;
+    display:inline-block;
+}
+
+.btn:hover{
+    background:#ff4f90;
 }
 </style>
 
@@ -78,6 +94,14 @@ permasalahan di lingkungan secara cepat, mudah, dan transparan.
 🗑️ Sampah menumpuk <br>
 🌧️ Banjir lokal <br>
 🏢 Fasilitas umum bermasalah
+</div>
+
+<hr>
+
+<!-- 🔥 TOMBOL UTAMA -->
+<div class="button-group">
+    <a href="/reports/" class="btn">📋 Daftar Laporan</a>
+    <a href="/add/" class="btn">+ Tambah Laporan</a>
 </div>
 
 </div>
