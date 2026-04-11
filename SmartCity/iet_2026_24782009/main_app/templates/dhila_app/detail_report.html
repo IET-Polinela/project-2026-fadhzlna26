@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Detail Laporan</title>
+
+<style>
+body{
+    font-family: Arial;
+    background: linear-gradient(135deg,#ffd6e8,#d6e8ff);
+    margin:0;
+}
+
+/* container */
+.container{
+    width:60%;
+    margin:60px auto;
+    background:white;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0px 10px 25px rgba(0,0,0,0.2);
+}
+
+/* judul */
+.title{
+    font-size:26px;
+    font-weight:bold;
+    color:#ff6fa5;
+    margin-bottom:20px;
+    text-align:center;
+}
+
+/* box detail */
+.box{
+    background:#f8f8f8;
+    padding:12px;
+    margin:10px 0;
+    border-radius:10px;
+}
+
+/* tombol */
+.btn{
+    display:inline-block;
+    margin-top:20px;
+    background:#5c8df6;
+    color:white;
+    padding:10px 15px;
+    border-radius:10px;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+.btn:hover{
+    background:#3f6edc;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="title">Detail Laporan</div>
+
+<div class="box"><b>Judul:</b> {{ report.title }}</div>
+<div class="box"><b>Kategori:</b> {{ report.category }}</div>
+<div class="box"><b>Lokasi:</b> {{ report.location }}</div>
+<div class="box"><b>Deskripsi:</b> {{ report.description }}</div>
+<div class="box"><b>Status:</b> {{ report.status }}</div>
+<div class="box"><b>Dibuat pada:</b> {{ report.created_at }}</div>
+
+<a href="{% url 'report_list' %}" class="btn">← Kembali</a>
+
+</div>
+
+</body>
+</html>

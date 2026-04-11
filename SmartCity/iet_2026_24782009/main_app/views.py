@@ -1,49 +1,56 @@
-from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
+from django.views import View
+from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.shortcuts import get_object_or_404, redirect
 from .models import Report
-from .forms import ReportForm
 
 
 # HOME
-def home(request):
-    return render(request, 'dhila_app/home.html')
+class HomeView(TemplateView):
+    template_name = 'dhila_app/home.html'
 
 
-# READ (halaman daftar laporan)
-def list_report(request):
-    reports = Report.objects.all()
-    return render(request, 'dhila_app/list_report.html', {'reports': reports})
+# READ → ListView
+class ReportListView(ListView):
+    model = Report
+    template_name = 'dhila_app/list_report.html'
+    context_object_name = 'reports'
 
 
-# CREATE
-def add_report(request):
-    if request.method == "POST":
-        form = ReportForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('list_report')
-    else:
-        form = ReportForm()
-
-    return render(request, 'dhila_app/add_report.html', {'form': form})
+# DETAIL
+class ReportDetailView(DetailView):
+    model = Report
+    template_name = 'dhila_app/detail_report.html'
+    context_object_name = 'report'
 
 
-# UPDATE
-def update_report(request, id):
-    report = Report.objects.get(id=id)
-
-    if request.method == "POST":
-        form = ReportForm(request.POST, instance=report)
-        if form.is_valid():
-            form.save()
-            return redirect('list_report')
-    else:
-        form = ReportForm(instance=report)
-
-    return render(request, 'dhila_app/update_report.html', {'form': form})
+# CREATE → CreateView
+class ReportCreateView(CreateView):
+    model = Report
+    fields = ['title', 'category', 'description', 'location']
+    template_name = 'dhila_app/add_report.html'
+    success_url = reverse_lazy('report_list')
 
 
-# DELETE
-def delete_report(request, id):
-    report = Report.objects.get(id=id)
-    report.delete()
-    return redirect('list_report')
+# UPDATE → UpdateView
+class ReportUpdateView(UpdateView):
+    model = Report
+    fields = ['title', 'category', 'description', 'location']
+    template_name = 'dhila_app/update_report.html'
+    success_url = reverse_lazy('report_list')
+
+
+# DELETE → DeleteView
+class ReportDeleteView(DeleteView):
+    model = Report
+    template_name = 'dhila_app/delete_report.html'
+    success_url = reverse_lazy('report_list')
+
+
+class ReportUpdateStatusView(View):
+    def post(self, request, pk):
+        report = get_object_or_404(Report, pk=pk)
+        new_status = request.POST.get('status')
+        report.status = new_status
+        report.save()
+        return redirect('report_list')
