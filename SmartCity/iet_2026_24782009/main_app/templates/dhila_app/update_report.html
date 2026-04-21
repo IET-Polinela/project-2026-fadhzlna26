@@ -1,9 +1,85 @@
-<h2>Edit Laporan</h2>
+{% extends 'base.html' %}
 
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Update</button>
-</form>
+{% block title %}Edit Laporan{% endblock %}
 
-<a href="/">Kembali</a>
+{% block content %}
+
+<!-- 🔥 BREADCRUMB -->
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+        <a href="/">Home</a>
+    </li>
+    <li class="breadcrumb-item">
+        <a href="{% url 'report_list' %}">Reports</a>
+    </li>
+    <li class="breadcrumb-item active">
+        Edit Laporan
+    </li>
+  </ol>
+</nav>
+
+<!-- 🔥 CARD -->
+<div class="card shadow p-4 mt-3">
+
+    <h3 class="mb-4 text-primary text-center">
+        Edit Laporan
+    </h3>
+
+    <form method="POST" onsubmit="handleUpdate(event)">
+        {% csrf_token %}
+
+        <!-- JUDUL -->
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Judul</label>
+            {{ form.title }}
+        </div>
+
+        <!-- KATEGORI -->
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Kategori</label>
+            {{ form.category }}
+        </div>
+
+        <!-- LOKASI -->
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Lokasi</label>
+            {{ form.location }}
+        </div>
+
+        <!-- DESKRIPSI -->
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Deskripsi</label>
+            {{ form.description }}
+        </div>
+
+        <!-- 🔥 BUTTON -->
+        <div class="d-flex justify-content-between mt-4">
+
+            <a href="{% url 'report_list' %}" class="btn btn-secondary">
+                ← Kembali
+            </a>
+
+            <button type="submit" id="updateBtn" class="btn btn-warning">
+                Update
+                <span id="spinnerUpdate" class="spinner-border spinner-border-sm ms-2 d-none"></span>
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+<!-- 🔥 SCRIPT LOADING -->
+<script>
+function handleUpdate(event){
+    const btn = document.getElementById("updateBtn");
+    const spinner = document.getElementById("spinnerUpdate");
+
+    spinner.classList.remove("d-none");
+    btn.disabled = true;
+}
+</script>
+
+{% endblock %}

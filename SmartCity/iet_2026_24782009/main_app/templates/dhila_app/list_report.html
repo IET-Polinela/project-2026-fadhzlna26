@@ -1,143 +1,119 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Daftar Laporan</title>
+{% extends 'base.html' %}
 
-<style>
-body{
-    font-family: Arial;
-    background: linear-gradient(135deg,#ffd6e8,#d6e8ff);
-    margin:0;
-}
+{% block title %}Daftar Laporan{% endblock %}
 
-.container{
-    width:70%;
-    margin:50px auto;
-    background:white;
-    padding:30px;
-    border-radius:20px;
-    box-shadow:0px 10px 25px rgba(0,0,0,0.2);
-}
+{% block content %}
 
-.back-btn{
-    display:inline-block;
-    margin-bottom:20px;
-    background:#5c8df6;
-    color:white;
-    padding:10px 15px;
-    border-radius:10px;
-    text-decoration:none;
-    font-weight:bold;
-}
+<!-- 🔥 BREADCRUMB -->
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+        <a href="/">Home</a>
+    </li>
+    <li class="breadcrumb-item active">
+        Reports
+    </li>
+  </ol>
+</nav>
 
-.back-btn:hover{
-    background:#3f6edc;
-}
+<h2 class="mb-3">Daftar Laporan</h2>
 
-.card{
-    background:#fff;
-    padding:20px;
-    margin:20px 0;
-    border-radius:15px;
-    box-shadow:0px 5px 15px rgba(0,0,0,0.1);
-}
+<a href="/add/" class="btn btn-pink mb-3">+ Tambah Laporan</a>
 
-.title{
-    font-size:20px;
-    font-weight:bold;
-    color:#ff6fa5;
-    margin-bottom:10px;
-}
+{% if reports %}
 
-.box{
-    background:#f8f8f8;
-    padding:10px;
-    margin:5px 0;
-    border-radius:10px;
-}
+<!-- 🔥 RESPONSIVE TABLE -->
+<div class="table-responsive">
+<table class="table table-bordered table-striped align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>Judul</th>
+            <th>Lokasi</th>
+            <th>Status</th>
+            <th style="width: 320px;">Aksi</th>
+        </tr>
+    </thead>
+    <tbody>
 
-.btn{
-    text-decoration:none;
-    padding:6px 12px;
-    border-radius:8px;
-    color:white;
-    display:inline-block;
-    margin-right:5px;
-}
+    {% for report in reports %}
+    <tr>
+        <td>{{ report.title }}</td>
+        <td>{{ report.location }}</td>
 
-.edit{ background:#5c8df6; }
-.delete{ background:#ff6fa5; }
+        <td>
+            {% if report.status == "REPORTED" %}
+                <span class="badge bg-secondary">Reported</span>
 
-</style>
+            {% elif report.status == "VERIFIED" %}
+                <span class="badge bg-info text-dark">Verified</span>
 
-</head>
+            {% elif report.status == "IN_PROGRESS" %}
+                <span class="badge bg-warning text-dark">In Progress</span>
 
-<body>
+            {% elif report.status == "RESOLVED" %}
+                <span class="badge bg-success">Selesai</span><br>
+                <small class="text-success">✔ Laporan selesai diproses</small>
+            {% endif %}
+        </td>
 
-<div class="container">
+        <td>
+            <a href="/detail/{{ report.pk }}/" class="btn btn-success btn-sm">Detail</a>
+            <a href="/update/{{ report.pk }}/" class="btn btn-primary btn-sm">Edit</a>
 
-<a href="/" class="back-btn">← Kembali</a>
+            <a href="#" 
+               onclick="confirmDelete(event, '{{ report.pk }}')" 
+               class="btn btn-danger btn-sm">
+               Hapus
+            </a>
 
-<h2>Daftar Laporan</h2>
+            <form method="POST" action="/update-status/{{ report.pk }}/" 
+                  style="display:inline;"
+                  onsubmit="return confirm('Yakin ingin mengubah status?');">
+                {% csrf_token %}
 
-{% for report in reports %}
-<div class="card">
+                {% if report.status == "REPORTED" %}
+                    <button class="btn btn-info btn-sm" name="status" value="VERIFIED">
+                        Verifikasi
+                    </button>
 
-    <div class="title">{{ report.title }}</div>
+                {% elif report.status == "VERIFIED" %}
+                    <button class="btn btn-warning btn-sm" name="status" value="IN_PROGRESS">
+                        Proses
+                    </button>
 
-    <div class="box"><b>Kategori:</b> {{ report.category }}</div>
-    <div class="box"><b>Lokasi:</b> {{ report.location }}</div>
-    <div class="box"><b>Deskripsi:</b> {{ report.description }}</div>
+                {% elif report.status == "IN_PROGRESS" %}
+                    <button class="btn btn-success btn-sm" name="status" value="RESOLVED">
+                        Selesai
+                    </button>
+                {% endif %}
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
 
-    <!-- STATUS + KETERANGAN -->
-    <div class="box">
-        <b>Status:</b> {{ report.status }}
+    </tbody>
+</table>
+</div>
 
-        {% if report.status == "RESOLVED" %}
-            <span>(Laporan sudah selesai diproses ✅)</span>
-        {% endif %}
-    </div>
+{% else %}
 
-    <!-- WORKFLOW BUTTON -->
-    <form method="POST" action="/update-status/{{ report.pk }}/">
-        {% csrf_token %}
+<!-- 🔥 EMPTY STATE (SUDAH DIPERBAIKI) -->
+<div class="text-center mt-5">
 
-        {% if report.status == "REPORTED" %}
-            <button type="submit" name="status" value="VERIFIED">Verifikasi</button>
+    <h4 class="fw-bold" style="color:#333;">
+        Belum ada laporan
+    </h4>
 
-        {% elif report.status == "VERIFIED" %}
-            <button type="submit" name="status" value="IN_PROGRESS">Proses</button>
+    <p class="mt-2" style="color:#555; font-size:16px;">
+        Yuk mulai laporkan masalah di sekitarmu!
+    </p>
 
-        {% elif report.status == "IN_PROGRESS" %}
-            <button type="submit" name="status" value="RESOLVED">Selesai</button>
-
-        {% endif %}
-    </form>
-
-    <br>
-
-    <!-- DETAIL -->
-    <a href="/detail/{{ report.pk }}/" class="btn" style="background:#28a745;">
-        Detail
-    </a>
-
-    <!-- EDIT -->
-    <a href="/update/{{ report.pk }}/" class="btn edit">Edit</a>
-
-    <!-- DELETE -->
-    <a href="/delete/{{ report.pk }}/"
-       class="btn delete"
-       onclick="return confirm('Yakin mau hapus laporan ini?');">
-       Hapus
+    <a href="/add/" class="btn btn-pink mt-3">
+        + Tambah Laporan
     </a>
 
 </div>
 
-{% empty %}
-<p>Belum ada laporan</p>
-{% endfor %}
+{% endif %}
 
-</div>
-
-</body>
-</html>
+{% endblock %}

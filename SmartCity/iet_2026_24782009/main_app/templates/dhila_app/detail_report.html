@@ -1,77 +1,98 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Detail Laporan</title>
+{% extends 'base.html' %}
 
-<style>
-body{
-    font-family: Arial;
-    background: linear-gradient(135deg,#ffd6e8,#d6e8ff);
-    margin:0;
-}
+{% block title %}Detail Laporan{% endblock %}
 
-/* container */
-.container{
-    width:60%;
-    margin:60px auto;
-    background:white;
-    padding:30px;
-    border-radius:20px;
-    box-shadow:0px 10px 25px rgba(0,0,0,0.2);
-}
+{% block content %}
 
-/* judul */
-.title{
-    font-size:26px;
-    font-weight:bold;
-    color:#ff6fa5;
-    margin-bottom:20px;
-    text-align:center;
-}
+<!-- 🔥 BREADCRUMB -->
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+        <a href="/">Home</a>
+    </li>
+    <li class="breadcrumb-item">
+        <a href="{% url 'report_list' %}">Reports</a>
+    </li>
+    <li class="breadcrumb-item active">
+        Detail
+    </li>
+  </ol>
+</nav>
 
-/* box detail */
-.box{
-    background:#f8f8f8;
-    padding:12px;
-    margin:10px 0;
-    border-radius:10px;
-}
+<!-- 🔥 CARD -->
+<div class="card shadow p-4 mt-3">
 
-/* tombol */
-.btn{
-    display:inline-block;
-    margin-top:20px;
-    background:#5c8df6;
-    color:white;
-    padding:10px 15px;
-    border-radius:10px;
-    text-decoration:none;
-    font-weight:bold;
-}
+    <h3 class="text-center text-primary mb-4">
+        Detail Laporan
+    </h3>
 
-.btn:hover{
-    background:#3f6edc;
-}
-</style>
+    <!-- 🔥 RESPONSIVE TABLE -->
+    <div class="table-responsive">
+        <table class="table table-bordered align-middle">
 
-</head>
+            <tr>
+                <th style="width:30%">Judul</th>
+                <td>{{ report.title }}</td>
+            </tr>
 
-<body>
+            <tr>
+                <th>Kategori</th>
+                <td>{{ report.category }}</td>
+            </tr>
 
-<div class="container">
+            <tr>
+                <th>Lokasi</th>
+                <td>{{ report.location }}</td>
+            </tr>
 
-<div class="title">Detail Laporan</div>
+            <tr>
+                <th>Deskripsi</th>
+                <td>{{ report.description }}</td>
+            </tr>
 
-<div class="box"><b>Judul:</b> {{ report.title }}</div>
-<div class="box"><b>Kategori:</b> {{ report.category }}</div>
-<div class="box"><b>Lokasi:</b> {{ report.location }}</div>
-<div class="box"><b>Deskripsi:</b> {{ report.description }}</div>
-<div class="box"><b>Status:</b> {{ report.status }}</div>
-<div class="box"><b>Dibuat pada:</b> {{ report.created_at }}</div>
+            <tr>
+                <th>Status</th>
+                <td>
+                    {% if report.status == "REPORTED" %}
+                        <span class="badge bg-secondary">Reported</span>
 
-<a href="{% url 'report_list' %}" class="btn">← Kembali</a>
+                    {% elif report.status == "VERIFIED" %}
+                        <span class="badge bg-info text-dark">Verified</span>
+
+                    {% elif report.status == "IN_PROGRESS" %}
+                        <span class="badge bg-warning text-dark">In Progress</span>
+
+                    {% elif report.status == "RESOLVED" %}
+                        <span class="badge bg-success">Resolved</span>
+                        <br>
+                        <small class="text-success">
+                            ✔ Laporan sudah selesai diproses
+                        </small>
+                    {% endif %}
+                </td>
+            </tr>
+
+            <tr>
+                <th>Dibuat pada</th>
+                <td>
+                    {{ report.created_at|date:"d M Y, H:i" }}
+                    <br>
+                    <small class="text-muted">
+                        (Laporan ini dibuat pada waktu tersebut)
+                    </small>
+                </td>
+            </tr>
+
+        </table>
+    </div>
+
+    <!-- 🔥 BUTTON -->
+    <div class="text-end mt-3">
+        <a href="{% url 'report_list' %}" class="btn btn-primary">
+            ← Kembali
+        </a>
+    </div>
 
 </div>
 
-</body>
-</html>
+{% endblock %}

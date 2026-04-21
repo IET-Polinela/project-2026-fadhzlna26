@@ -1,114 +1,98 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Metro Smart City Reporting</title>
+{% extends 'base.html' %}
 
-<style>
-body{
-    font-family: Arial, sans-serif;
-    margin:0;
-    padding:0;
-    background: linear-gradient(135deg,#ffd6e8,#d6e8ff);
-}
+{% block title %}Home{% endblock %}
 
-/* navbar */
-.navbar{
-    background:white;
-    padding:15px;
-    text-align:center;
-    box-shadow:0px 2px 10px rgba(232, 29, 151, 0.1);
-}
+{% block content %}
 
-.navbar a{
-    text-decoration:none;
-    margin:0 15px;
-    font-weight:bold;
-    color:#ff6fa5;
-}
+<!-- 🔥 BREADCRUMB -->
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item active">
+        Home
+    </li>
+  </ol>
+</nav>
 
-/* container */
-.container{
-    background:white;
-    margin:40px auto;
-    padding:40px;
-    width:60%;
-    border-radius:20px;
-    box-shadow:0px 10px 25px rgba(179, 51, 164, 0.15);
-    text-align:center;
-}
+<div class="text-center">
 
-h1{
-    color:#ff6fa5;
-}
+    <!-- 🔥 JUDUL -->
+    <h1 class="fw-bold mb-3" style="color:#ff4f90;">
+        Selamat Datang di SmartCity Metro
+    </h1>
 
-/* list masalah */
-.list{
-    text-align:left;
-    width:60%;
-    margin:0 auto;
-    line-height:2;
-}
+    <!-- 🔥 BOX DESKRIPSI -->
+    <div class="card shadow mx-auto p-4 mb-4"
+         style="max-width:600px; border-radius:20px; border:none;">
 
-/* tombol area */
-.button-group{
-    margin-top:30px;
-}
+        <h5 class="fw-bold" style="color:#ff6fa5;">
+            Platform pelaporan digital untuk mewujudkan Kota Metro yang lebih baik.
+        </h5>
 
-/* tombol */
-.btn{
-    background:#ff6fa5;
-    color:white;
-    padding:12px 20px;
-    border-radius:25px;
-    text-decoration:none;
-    font-weight:bold;
-    margin:10px;
-    display:inline-block;
-}
+        <p class="text-muted mt-2 mb-0">
+            Laporkan berbagai permasalahan di lingkungan Anda dengan mudah, cepat, dan transparan.
+            Setiap laporan sangat berarti untuk kenyamanan dan keamanan bersama.
+        </p>
 
-.btn:hover{
-    background:#ff4f90;
-}
-</style>
+    </div>
 
-</head>
+    <!-- 🔥 JUDUL SECTION -->
+    <h4 class="fw-bold mb-3">Masalah yang dapat dilaporkan:</h4>
 
-<body>
+    <!-- 🔥 RESPONSIVE GRID -->
+    <div class="row justify-content-center">
 
-<div class="navbar">
-<a href="/">Home</a>
-<a href="/about/">About</a>
-<a href="/contacts/">Contacts</a>
-</div>
+        <div class="col-6 col-md-2">
+            <div class="card p-3 shadow-sm text-center mb-3">
+                🚧
+                <h6 class="mt-2">Jalan rusak</h6>
+                <small class="text-muted">Laporkan jalan berlubang atau rusak</small>
+            </div>
+        </div>
 
-<div class="container">
+        <div class="col-6 col-md-2">
+            <div class="card p-3 shadow-sm text-center mb-3">
+                💡
+                <h6 class="mt-2">Lampu mati</h6>
+                <small class="text-muted">Perbaikan lampu jalan</small>
+            </div>
+        </div>
 
-<h1>Selamat Datang di SmartCity Metro</h1>
+        <div class="col-6 col-md-2">
+            <div class="card p-3 shadow-sm text-center mb-3">
+                🗑️
+                <h6 class="mt-2">Sampah</h6>
+                <small class="text-muted">Laporkan sampah menumpuk</small>
+            </div>
+        </div>
 
-<p>
-Platform pelaporan digital untuk membantu warga Kota Metro melaporkan berbagai 
-permasalahan di lingkungan secara cepat, mudah, dan transparan.
-</p>
+        <div class="col-6 col-md-2">
+            <div class="card p-3 shadow-sm text-center mb-3">
+                🌧️
+                <h6 class="mt-2">Banjir</h6>
+                <small class="text-muted">Titik rawan banjir</small>
+            </div>
+        </div>
 
-<h3>Masalah yang dapat dilaporkan:</h3>
+        <div class="col-6 col-md-2">
+            <div class="card p-3 shadow-sm text-center mb-3">
+                🏢
+                <h6 class="mt-2">Fasilitas</h6>
+                <small class="text-muted">Fasilitas umum rusak</small>
+            </div>
+        </div>
 
-<div class="list">
-🚧 Jalan rusak <br>
-💡 Lampu jalan mati <br>
-🗑️ Sampah menumpuk <br>
-🌧️ Banjir lokal <br>
-🏢 Fasilitas umum bermasalah
-</div>
+    </div>
 
-<hr>
+    <!-- 🔥 CTA -->
+    <p class="mt-4 text-muted">
+        Silakan jika ingin melaporkan klik tombol di bawah! 😊
+    </p>
 
-<!-- 🔥 TOMBOL UTAMA -->
-<div class="button-group">
-    <a href="/reports/" class="btn">📋 Daftar Laporan</a>
-    <a href="/add/" class="btn">+ Tambah Laporan</a>
-</div>
+    <a href="/add/" class="btn px-4"
+       style="background:#ff6fa5; color:white; border-radius:30px;">
+       + Tambah Laporan
+    </a>
 
 </div>
 
-</body>
-</html>
+{% endblock %}

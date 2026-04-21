@@ -1,9 +1,83 @@
-<h2>Tambah Laporan</h2>
+{% extends 'base.html' %}
 
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Simpan</button>
-</form>
+{% block title %}Tambah Laporan{% endblock %}
 
-<a href="/">Kembali</a>
+{% block content %}
+
+<!-- 🔥 BREADCRUMB -->
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+        <a href="/">Home</a>
+    </li>
+    <li class="breadcrumb-item">
+        <a href="/reports/">Reports</a>
+    </li>
+    <li class="breadcrumb-item active">
+        Tambah Laporan
+    </li>
+  </ol>
+</nav>
+
+<!-- 🔥 CARD -->
+<div class="card shadow p-4 mt-3">
+
+    <h3 class="mb-4 text-success text-center">
+        Tambah Laporan
+    </h3>
+
+    <form method="POST" onsubmit="handleSubmit(event)">
+        {% csrf_token %}
+
+        <!-- JUDUL -->
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Judul</label>
+            {{ form.title }}
+        </div>
+
+        <!-- KATEGORI -->
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Kategori</label>
+            {{ form.category }}
+        </div>
+
+        <!-- DESKRIPSI -->
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Deskripsi</label>
+            {{ form.description }}
+        </div>
+
+        <!-- LOKASI -->
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Lokasi</label>
+            {{ form.location }}
+        </div>
+
+        <!-- 🔥 BUTTON -->
+        <div class="d-flex justify-content-between mt-4">
+            <a href="/reports/" class="btn btn-secondary">
+                ← Kembali
+            </a>
+
+            <button type="submit" id="submitBtn" class="btn btn-success">
+                Kirim
+                <span id="spinner" class="spinner-border spinner-border-sm ms-2 d-none"></span>
+            </button>
+        </div>
+
+    </form>
+
+</div>
+
+<!-- 🔥 SCRIPT LOADING -->
+<script>
+function handleSubmit(event){
+    const btn = document.getElementById("submitBtn");
+    const spinner = document.getElementById("spinner");
+
+    spinner.classList.remove("d-none");
+    btn.disabled = true;
+}
+</script>
+
+{% endblock %}

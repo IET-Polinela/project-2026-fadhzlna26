@@ -2,6 +2,7 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
 from .models import Report
 
 
@@ -24,33 +25,51 @@ class ReportDetailView(DetailView):
     context_object_name = 'report'
 
 
-# CREATE → CreateView
+# CREATE → HIJAU
 class ReportCreateView(CreateView):
     model = Report
     fields = ['title', 'category', 'description', 'location']
     template_name = 'dhila_app/add_report.html'
     success_url = reverse_lazy('report_list')
 
+    def form_valid(self, form):
+        messages.success(self.request, "✅ Laporan berhasil ditambahkan!")
+        return super().form_valid(form)
 
-# UPDATE → UpdateView
+
+# UPDATE → BIRU
 class ReportUpdateView(UpdateView):
     model = Report
     fields = ['title', 'category', 'description', 'location']
     template_name = 'dhila_app/update_report.html'
     success_url = reverse_lazy('report_list')
 
+    def form_valid(self, form):
+        messages.info(self.request, "✏️ Laporan berhasil diperbarui!")
+        return super().form_valid(form)
 
-# DELETE → DeleteView
+
+# DELETE → MERAH
 class ReportDeleteView(DeleteView):
     model = Report
-    template_name = 'dhila_app/delete_report.html'
     success_url = reverse_lazy('report_list')
 
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        messages.error(request, "🗑️ Laporan berhasil dihapus!")
+        self.object.delete()
+        return redirect(self.success_url)
 
+
+# UPDATE STATUS → KUNING
 class ReportUpdateStatusView(View):
     def post(self, request, pk):
         report = get_object_or_404(Report, pk=pk)
         new_status = request.POST.get('status')
+
         report.status = new_status
         report.save()
+
+        messages.warning(request, f"⚙️ Status diubah menjadi {new_status}!")
+
         return redirect('report_list')
