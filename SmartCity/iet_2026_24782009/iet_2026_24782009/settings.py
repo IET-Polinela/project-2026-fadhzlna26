@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main_app',
     'about',
-    'contacts'
+    'contacts',
+    'usermanagement_24782009',
 ]
 
 MIDDLEWARE = [
@@ -123,3 +124,9 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# CUSTOM USER MODEL
+AUTH_USER_MODEL = 'usermanagement_24782009.CustomUser'
+
+# AUTH REDIRECT (WAJIB UNTUK LOGIN)
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/login/'

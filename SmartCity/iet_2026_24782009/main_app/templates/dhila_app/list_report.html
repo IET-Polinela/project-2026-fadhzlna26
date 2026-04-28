@@ -60,30 +60,36 @@
             <a href="/detail/{{ report.pk }}/" class="btn btn-success btn-sm">Detail</a>
             <a href="/update/{{ report.pk }}/" class="btn btn-primary btn-sm">Edit</a>
 
-            <a href="#" 
-               onclick="confirmDelete(event, '{{ report.pk }}')" 
-               class="btn btn-danger btn-sm">
-               Hapus
-            </a>
+            <form method="get" action="{% url 'report_delete' report.pk %}" 
+                  style="display:inline;"
+                  onsubmit="return handleDelete(event);">
+                <button type="submit" class="btn btn-danger btn-sm">
+                    Hapus
+                    <span class="spinner-border spinner-border-sm ms-2 d-none delete-spinner"></span>
+                </button>
+            </form>
 
             <form method="POST" action="/update-status/{{ report.pk }}/" 
                   style="display:inline;"
-                  onsubmit="return confirm('Yakin ingin mengubah status?');">
+                  onsubmit="return handleStatusSubmit(event);">
                 {% csrf_token %}
 
                 {% if report.status == "REPORTED" %}
                     <button class="btn btn-info btn-sm" name="status" value="VERIFIED">
                         Verifikasi
+                        <span class="spinner-border spinner-border-sm ms-2 d-none status-spinner"></span>
                     </button>
 
                 {% elif report.status == "VERIFIED" %}
                     <button class="btn btn-warning btn-sm" name="status" value="IN_PROGRESS">
                         Proses
+                        <span class="spinner-border spinner-border-sm ms-2 d-none status-spinner"></span>
                     </button>
 
                 {% elif report.status == "IN_PROGRESS" %}
                     <button class="btn btn-success btn-sm" name="status" value="RESOLVED">
                         Selesai
+                        <span class="spinner-border spinner-border-sm ms-2 d-none status-spinner"></span>
                     </button>
                 {% endif %}
             </form>
@@ -115,5 +121,35 @@
 </div>
 
 {% endif %}
+
+<script>
+function handleDelete(event) {
+    if (!confirm('Yakin ingin menghapus laporan ini?')) {
+        return false;
+    }
+
+    const form = event.target;
+    const button = form.querySelector('button[type="submit"]');
+    const spinner = button.querySelector('.delete-spinner');
+
+    if (spinner) {
+        spinner.classList.remove('d-none');
+    }
+    button.disabled = true;
+    return true;
+}
+
+function handleStatusSubmit(event) {
+    const form = event.target;
+    const button = form.querySelector('button[type="submit"]');
+    const spinner = button.querySelector('.status-spinner');
+
+    if (spinner) {
+        spinner.classList.remove('d-none');
+    }
+    button.disabled = true;
+    return true;
+}
+</script>
 
 {% endblock %}

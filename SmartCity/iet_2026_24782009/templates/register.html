@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 85vh;">
+    <div class="w-100" style="max-width: 500px;">
+        <div class="card p-4 shadow-lg">
+
+            <h3 class="text-center mb-3 fw-bold">Register</h3>
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label class="form-label">Username</label>
+                    {% if form.username.errors %}
+                        {{ form.username }}
+                    {% else %}
+                        <input type="text" name="username" class="form-control" value="{{ form.username.value|default:'' }}" required>
+                    {% endif %}
+                    <small class="text-muted d-block mt-2">
+                        Maksimal 150 karakter. Huruf, angka, dan @/./+/-/_ saja.
+                    </small>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    {% if form.email.errors %}
+                        {{ form.email }}
+                    {% else %}
+                        <input type="email" name="email" class="form-control" value="{{ form.email.value|default:'' }}" required>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <div class="input-group">
+                        <input type="password" name="password1" id="registerPassword1Field" class="form-control" required>
+                        <button type="button" class="btn btn-outline-secondary" 
+                                onclick="togglePasswordRegister('1')">
+                            <i class="bi bi-eye-fill" id="registerPassword1Icon"></i>
+                        </button>
+                    </div>
+                    <small class="text-muted d-block mt-2">
+                        Minimal 8 karakter, tidak boleh terlalu umum, dan tidak boleh hanya angka.
+                    </small>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Confirm Password</label>
+                    <div class="input-group">
+                        <input type="password" name="password2" id="registerPassword2Field" class="form-control" required>
+                        <button type="button" class="btn btn-outline-secondary" 
+                                onclick="togglePasswordRegister('2')">
+                            <i class="bi bi-eye-fill" id="registerPassword2Icon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button class="btn btn-pink w-100 mt-3">Register</button>
+
+            </form>
+
+            <p class="text-center mt-3">
+                Sudah punya akun?
+                <a href="/login/" class="fw-bold text-decoration-none" style="color:#ff6fa5;">
+                    Login
+                </a>
+            </p>
+
+        </div>
+    </div>
+</div>
+
+<script>
+function togglePasswordRegister(fieldNum) {
+    const field = document.getElementById('registerPassword' + fieldNum + 'Field');
+    const icon = document.getElementById('registerPassword' + fieldNum + 'Icon');
+    
+    if (field.type === 'password') {
+        field.type = 'text';
+        icon.classList.remove('bi-eye-fill');
+        icon.classList.add('bi-eye-slash-fill');
+    } else {
+        field.type = 'password';
+        icon.classList.remove('bi-eye-slash-fill');
+        icon.classList.add('bi-eye-fill');
+    }
+}
+</script>
+
+{% endblock %}
