@@ -15,7 +15,22 @@ def dashboard_data(request):
     # Data kategori
     category_data = Report.objects.values('category').annotate(total=Count('id'))
 
+    # 🔥 TAMBAHAN (WAJIB)
+    reported = list(
+        Report.objects.filter(status='REPORTED')
+        .order_by('-id')[:5]
+        .values('title', 'category', 'status')
+    )
+
+    resolved = list(
+        Report.objects.filter(status='RESOLVED')
+        .order_by('-id')[:5]
+        .values('title', 'category', 'status')
+    )
+
     return JsonResponse({
         'status': list(status_data),
         'category': list(category_data),
+        'reported': reported,
+        'resolved': resolved,
     })
