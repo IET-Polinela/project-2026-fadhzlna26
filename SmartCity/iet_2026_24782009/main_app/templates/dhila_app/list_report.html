@@ -4,15 +4,10 @@
 
 {% block content %}
 
-<!-- 🔥 BREADCRUMB -->
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item">
-        <a href="/">Home</a>
-    </li>
-    <li class="breadcrumb-item active">
-        Reports
-    </li>
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item active">Reports</li>
   </ol>
 </nav>
 
@@ -20,9 +15,10 @@
 
 <a href="/add/" class="btn btn-pink mb-3">+ Tambah Laporan</a>
 
+<input type="text" id="searchInput" class="form-control mb-3" placeholder="Cari laporan...">
+
 {% if reports %}
 
-<!-- 🔥 RESPONSIVE TABLE -->
 <div class="table-responsive">
 <table class="table table-bordered table-striped align-middle">
     <thead class="table-dark">
@@ -43,13 +39,10 @@
         <td>
             {% if report.status == "REPORTED" %}
                 <span class="badge bg-secondary">Reported</span>
-
             {% elif report.status == "VERIFIED" %}
                 <span class="badge bg-info text-dark">Verified</span>
-
             {% elif report.status == "IN_PROGRESS" %}
                 <span class="badge bg-warning text-dark">In Progress</span>
-
             {% elif report.status == "RESOLVED" %}
                 <span class="badge bg-success">Selesai</span><br>
                 <small class="text-success">✔ Laporan selesai diproses</small>
@@ -57,37 +50,39 @@
         </td>
 
         <td>
-            <a href="/detail/{{ report.pk }}/" class="btn btn-success btn-sm">Detail</a>
+            <button class="btn btn-success btn-sm" onclick="showDetail('{{ report.pk }}')">
+                Detail
+            </button>
+
             <a href="/update/{{ report.pk }}/" class="btn btn-primary btn-sm">Edit</a>
 
             <form method="get" action="{% url 'report_delete' report.pk %}" 
-                  style="display:inline;"
-                  onsubmit="return handleDelete(event);">
+                  style="display:inline;" onsubmit="return handleDelete(event);">
                 <button type="submit" class="btn btn-danger btn-sm">
                     Hapus
                     <span class="spinner-border spinner-border-sm ms-2 d-none delete-spinner"></span>
                 </button>
             </form>
 
-            <form method="POST" action="/update-status/{{ report.pk }}/" 
-                  style="display:inline;"
-                  onsubmit="return handleStatusSubmit(event);">
+            <!-- 🔥 STATUS UPDATE FORM -->
+            <form method="POST" action="/update-status/{{ report.pk }}/" style="display:inline;">
                 {% csrf_token %}
+                <input type="hidden" name="status" id="status-{{ report.pk }}" value="">
 
                 {% if report.status == "REPORTED" %}
-                    <button class="btn btn-info btn-sm" name="status" value="VERIFIED">
+                    <button type="button" class="btn btn-info btn-sm status-btn" data-report-id="{{ report.pk }}" data-status="VERIFIED">
                         Verifikasi
                         <span class="spinner-border spinner-border-sm ms-2 d-none status-spinner"></span>
                     </button>
 
                 {% elif report.status == "VERIFIED" %}
-                    <button class="btn btn-warning btn-sm" name="status" value="IN_PROGRESS">
+                    <button type="button" class="btn btn-warning btn-sm status-btn" data-report-id="{{ report.pk }}" data-status="IN_PROGRESS">
                         Proses
                         <span class="spinner-border spinner-border-sm ms-2 d-none status-spinner"></span>
                     </button>
 
                 {% elif report.status == "IN_PROGRESS" %}
-                    <button class="btn btn-success btn-sm" name="status" value="RESOLVED">
+                    <button type="button" class="btn btn-success btn-sm status-btn" data-report-id="{{ report.pk }}" data-status="RESOLVED">
                         Selesai
                         <span class="spinner-border spinner-border-sm ms-2 d-none status-spinner"></span>
                     </button>
@@ -102,54 +97,172 @@
 </div>
 
 {% else %}
-
-<!-- 🔥 EMPTY STATE (SUDAH DIPERBAIKI) -->
 <div class="text-center mt-5">
-
-    <h4 class="fw-bold" style="color:#333;">
-        Belum ada laporan
-    </h4>
-
+    <h4 class="fw-bold" style="color:#333;">Belum ada laporan</h4>
     <p class="mt-2" style="color:#555; font-size:16px;">
         Yuk mulai laporkan masalah di sekitarmu!
     </p>
-
-    <a href="/add/" class="btn btn-pink mt-3">
-        + Tambah Laporan
-    </a>
-
+    <a href="/add/" class="btn btn-pink mt-3">+ Tambah Laporan</a>
 </div>
-
 {% endif %}
 
+<!-- MODAL -->
+<div class="modal fade" id="detailModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Detail Laporan</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        Loading...
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CSS HIGHLIGHT -->
+<style>
+.highlight {
+    background-color: yellow;
+    padding: 2px;
+    border-radius: 3px;
+}
+</style>
+
 <script>
+// SIMPAN HTML ASLI
+const originalRows = [];
+
+window.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll("tbody tr").forEach(row => {
+        originalRows.push(row.innerHTML);
+    });
+
+    const params = new URLSearchParams(window.location.search);
+    const savedQuery = params.get('q') || localStorage.getItem('reportSearchQuery') || '';
+    if (savedQuery) {
+        searchInput.value = savedQuery;
+        handleSearch();
+    }
+});
+
+// SEARCH + HIGHLIGHT
+const searchInput = document.getElementById('searchInput');
+let searchTimeout;
+
+function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function updateSearchUrl(query) {
+    const params = new URLSearchParams(window.location.search);
+    if (query) {
+        params.set('q', query);
+    } else {
+        params.delete('q');
+    }
+    const newUrl = window.location.pathname + (params.toString() ? `?${params.toString()}` : '');
+    window.history.replaceState({}, '', newUrl);
+}
+
+function clearCellHighlight(cell) {
+    cell.innerHTML = cell.textContent;
+}
+
+function highlightCell(cell, keyword) {
+    const regex = new RegExp(`(${escapeRegExp(keyword)})`, 'gi');
+    cell.innerHTML = cell.textContent.replace(regex, '<span class="highlight">$1</span>');
+}
+
+function handleSearch() {
+    const keyword = searchInput.value.trim().toLowerCase();
+    const rows = document.querySelectorAll('tbody tr');
+
+    rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        const searchableCells = Array.from(cells).slice(0, 3); // title, location, status
+        const highlightCells = Array.from(cells).slice(0, 2); // only title + location
+        let match = false;
+
+        if (!keyword) {
+            row.style.display = '';
+            highlightCells.forEach(clearCellHighlight);
+            return;
+        }
+
+        searchableCells.forEach(cell => {
+            const text = cell.textContent.toLowerCase();
+            if (!match && text.includes(keyword)) {
+                match = true;
+            }
+        });
+
+        highlightCells.forEach(cell => {
+            clearCellHighlight(cell);
+            const text = cell.textContent.toLowerCase();
+            if (keyword && text.includes(keyword)) {
+                highlightCell(cell, keyword);
+            }
+        });
+
+        row.style.display = match ? '' : 'none';
+    });
+
+    localStorage.setItem('reportSearchQuery', searchInput.value.trim());
+    updateSearchUrl(searchInput.value.trim());
+}
+
+searchInput.addEventListener('keyup', function() {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(handleSearch, 150);
+});
+
+// MODAL
+function showDetail(id) {
+    fetch(`/detail/${id}/`)
+    .then(res => res.text())
+    .then(html => {
+        document.getElementById('modalBody').innerHTML = html;
+        let modal = new bootstrap.Modal(document.getElementById('detailModal'));
+        modal.show();
+    });
+}
+
+// DELETE
 function handleDelete(event) {
-    if (!confirm('Yakin ingin menghapus laporan ini?')) {
-        return false;
-    }
-
-    const form = event.target;
-    const button = form.querySelector('button[type="submit"]');
+    if (!confirm('Yakin ingin menghapus laporan ini?')) return false;
+    const button = event.target.querySelector('button');
     const spinner = button.querySelector('.delete-spinner');
-
-    if (spinner) {
-        spinner.classList.remove('d-none');
-    }
+    spinner.classList.remove('d-none');
     button.disabled = true;
     return true;
 }
 
-function handleStatusSubmit(event) {
-    const form = event.target;
-    const button = form.querySelector('button[type="submit"]');
+// STATUS - Event Delegation
+document.addEventListener('click', function(event) {
+    const button = event.target.closest('.status-btn');
+    if (!button) return;
+
+    const reportId = button.dataset.reportId;
+    const statusValue = button.dataset.status;
+    
+    const form = button.closest('form');
+    const statusInput = form.querySelector(`input[name="status"]`);
     const spinner = button.querySelector('.status-spinner');
 
+    // Set status value
+    statusInput.value = statusValue;
+
+    // Show spinner
     if (spinner) {
         spinner.classList.remove('d-none');
     }
     button.disabled = true;
-    return true;
-}
+
+    // Submit form
+    form.submit();
+});
 </script>
 
 {% endblock %}

@@ -102,6 +102,17 @@ class ReportUpdateStatusView(AdminPermissionMixin, View):
         report = get_object_or_404(Report, pk=pk)
         new_status = request.POST.get('status')
 
+        # Validasi status tidak boleh kosong
+        if not new_status:
+            messages.error(request, "❌ Status tidak boleh kosong!")
+            return redirect('report_list')
+
+        # Validasi status harus valid
+        valid_statuses = [choice[0] for choice in Report._meta.get_field('status').choices]
+        if new_status not in valid_statuses:
+            messages.error(request, f"❌ Status '{new_status}' tidak valid!")
+            return redirect('report_list')
+
         report.status = new_status
         report.save()
 
