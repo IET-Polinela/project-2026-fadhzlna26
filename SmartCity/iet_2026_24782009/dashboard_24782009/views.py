@@ -15,7 +15,6 @@ def dashboard_data(request):
     # Data kategori
     category_data = Report.objects.values('category').annotate(total=Count('id'))
 
-    # 🔥 TAMBAHAN (WAJIB)
     reported = list(
         Report.objects.filter(status='REPORTED')
         .order_by('-id')[:5]

@@ -71,7 +71,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-// 🔥 FUNCTION WARNA STATUS (KONSISTEN)
+// 🔥 FUNCTION WARNA STATUS (TABEL)
 function getStatusBadge(status) {
   if (status === 'REPORTED') return 'bg-secondary';
   if (status === 'VERIFIED') return 'bg-primary';
@@ -88,13 +88,23 @@ fetch('/dashboard/data/')
     const statusLabels = data.status.map(item => item.status);
     const statusValues = data.status.map(item => item.total);
 
+    // 🔥 FIX WARNA (DINAMIS BERDASARKAN LABEL)
+    const statusColorMap = {
+      'REPORTED': '#6c757d',
+      'VERIFIED': '#0d6efd',
+      'IN_PROGRESS': '#ffc107',
+      'RESOLVED': '#198754'
+    };
+
+    const dynamicColors = statusLabels.map(label => statusColorMap[label]);
+
     new Chart(document.getElementById('statusChart'), {
       type: 'doughnut',
       data: {
         labels: statusLabels,
         datasets: [{
           data: statusValues,
-          backgroundColor: ['#6c757d', '#0d6efd', '#ffc107', '#198754']
+          backgroundColor: dynamicColors
         }]
       },
       options: {
