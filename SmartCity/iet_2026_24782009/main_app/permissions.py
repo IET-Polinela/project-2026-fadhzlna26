@@ -5,13 +5,13 @@ class IsOwnerAndDraftOrReadOnly(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
 
-        # Semua user yang login boleh lihat data
+        # Semua user login boleh GET
         if request.method in permissions.SAFE_METHODS:
             return True
 
-        # Admin boleh update status report
+        # Admin TIDAK boleh edit/delete draft citizen
         if request.user.is_staff:
-            return True
+            return False
 
         # Citizen hanya boleh edit/delete draft miliknya sendiri
         return (
