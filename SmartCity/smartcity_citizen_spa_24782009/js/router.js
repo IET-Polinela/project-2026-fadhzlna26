@@ -28,57 +28,114 @@ const routes = {
     `,
 
     '#dashboard': `
-        <div class="row g-4">
+        <div class="row g-3">
 
             <aside class="col-12 col-lg-3">
+                <div class="card border-0 p-3 shadow-sm">
 
-                <div class="card border-0 p-3 shadow-sm sticky-top"
-                     style="top:20px;">
-
-                    <button class="btn btn-primary btn-lg w-100 fw-bold mb-3">
+                    <button class="btn btn-primary btn-lg w-100 fw-bold">
                         <i class="bi bi-plus-circle-fill me-2"></i>
                         Laporan Baru
                     </button>
 
                 </div>
-
             </aside>
 
             <section class="col-12 col-lg-6">
+                <div class="card border-0 p-4 shadow-sm text-center text-muted">
 
-                <div class="card border-0 p-5 shadow-sm text-center text-muted border-dashed">
-
-                    <i class="bi bi-inbox fs-1"></i>
+                    <i class="bi bi-inbox fs-2"></i>
 
                     <h5 class="mt-3">
                         Selamat Datang!
                     </h5>
 
-                    <p>
+                    <p class="mb-0">
                         Koneksi API untuk data laporan akan diimplementasikan pada Lab 12.
                     </p>
 
                 </div>
-
             </section>
 
-            <aside class="col-lg-3 d-none d-lg-block">
+            <aside class="col-12 col-lg-3">
+                <div class="card border-0 p-3 shadow-sm">
 
-                <div class="card border-0 p-3 shadow-sm sticky-top"
-                     style="top:20px;">
-
-                    <h6 class="fw-bold">
+                    <h6 class="fw-bold mb-2">
                         <i class="bi bi-info-circle-fill text-primary me-2"></i>
                         Pengumuman
                     </h6>
 
-                </div>
+                    <p class="text-muted small mb-0">
+                        Gunakan portal ini untuk mengirim laporan warga.
+                    </p>
 
+                </div>
             </aside>
 
         </div>
     `
 };
+
+
+function renderNavbar() {
+
+    const navMenus = document.getElementById("nav-menus");
+    const token = localStorage.getItem("access_token");
+
+    if (!navMenus) return;
+
+    if (token) {
+
+        navMenus.innerHTML = `
+            <div class="dropdown">
+
+                <button
+                    class="btn btn-light dropdown-toggle fw-bold"
+                    type="button"
+                    data-bs-toggle="dropdown">
+
+                    <i class="bi bi-person-circle me-2"></i>
+                    Citizen
+                </button>
+
+                <ul class="dropdown-menu dropdown-menu-end">
+
+                    <li>
+                        <a
+                            class="dropdown-item text-danger"
+                            href="#"
+                            onclick="logout(); return false;">
+
+                            <i class="bi bi-box-arrow-right me-2"></i>
+                            Logout
+
+                        </a>
+                    </li>
+
+                </ul>
+
+            </div>
+        `;
+
+    } else {
+
+        navMenus.innerHTML = "";
+
+    }
+}
+
+
+function logout() {
+
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+
+    alert("Logout berhasil!");
+
+    window.location.hash = "#login";
+
+    renderNavbar();
+}
 
 
 function handleRouting() {
@@ -87,6 +144,8 @@ function handleRouting() {
 
     document.getElementById('app-content').innerHTML =
         routes[hash] || routes['#login'];
+
+    renderNavbar();
 
     if (
         hash === '#login' &&
@@ -97,12 +156,5 @@ function handleRouting() {
 }
 
 
-window.addEventListener(
-    'hashchange',
-    handleRouting
-);
-
-window.addEventListener(
-    'DOMContentLoaded',
-    handleRouting
-);
+window.addEventListener('hashchange', handleRouting);
+window.addEventListener('DOMContentLoaded', handleRouting);
