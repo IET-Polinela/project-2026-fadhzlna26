@@ -42,8 +42,32 @@
             border-color: #f04b91;
         }
 
+        .btn-outline-primary {
+            color: #ff5fa2;
+            border-color: #ff5fa2;
+        }
+
+        .btn-outline-primary:hover {
+            background-color: #ff5fa2;
+            border-color: #ff5fa2;
+            color: #fff;
+        }
+
+        .btn-outline-light {
+            font-weight: 700;
+        }
+
+        .btn-light {
+            font-weight: 700;
+        }
+
         .text-primary {
             color: #ff5fa2 !important;
+        }
+
+        .modal-header-pink {
+            background-color: #ff5fa2;
+            color: #ffffff;
         }
     </style>
 </head>
@@ -52,7 +76,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark navbar-custom shadow-sm">
     <div class="container-fluid px-4">
-        <a class="navbar-brand fw-bold" href="#">
+        <a class="navbar-brand fw-bold" href="#dashboard">
             <i class="bi bi-buildings-fill me-2"></i>Smart City Portal
         </a>
 
@@ -61,6 +85,87 @@
 </nav>
 
 <main class="container-fluid px-4 mt-4 spa-container" id="app-content"></main>
+
+<!-- Modal Tambah/Edit Laporan -->
+<div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+
+            <div class="modal-header modal-header-pink">
+                <h5 class="modal-title fw-bold" id="reportModalLabel">
+                    <i class="bi bi-pencil-square me-2"></i>Buat Laporan Baru
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body p-4">
+                <form id="reportForm">
+
+                    <div class="mb-3">
+                        <label for="title" class="form-label fw-semibold">Judul Laporan</label>
+                        <input 
+                            type="text" 
+                            class="form-control" 
+                            id="title" 
+                            name="title" 
+                            placeholder="Contoh: Jalan rusak"
+                            required
+                        >
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="category" class="form-label fw-semibold">Kategori</label>
+                        <input 
+                            type="text" 
+                            class="form-control" 
+                            id="category" 
+                            name="category" 
+                            placeholder="Contoh: Fasilitas Umum"
+                            required
+                        >
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="location" class="form-label fw-semibold">Lokasi</label>
+                        <input 
+                            type="text" 
+                            class="form-control" 
+                            id="location" 
+                            name="location" 
+                            placeholder="Contoh: Bandar Lampung"
+                            required
+                        >
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="description" class="form-label fw-semibold">Deskripsi</label>
+                        <textarea 
+                            class="form-control" 
+                            id="description" 
+                            name="description" 
+                            rows="4" 
+                            placeholder="Tuliskan detail laporan..."
+                            required
+                        ></textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <button type="button" class="btn btn-outline-secondary fw-bold px-4" id="btnDraft">
+                            Simpan Draft
+                        </button>
+
+                        <button type="button" class="btn btn-primary fw-bold px-4" id="btnSubmit">
+                            Ajukan
+                            <i class="bi bi-send-fill ms-1"></i>
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="js/api.js"></script>
