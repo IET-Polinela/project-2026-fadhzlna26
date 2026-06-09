@@ -207,9 +207,17 @@ function renderList(reports, tab) {
                     <div class="d-flex justify-content-between align-items-start mb-2">
                         <div>
                             <h5 class="fw-bold mb-1">${escapeHtml(report.title)}</h5>
+
                             <small class="text-muted">
                                 <i class="bi bi-geo-alt me-1"></i>
                                 ${escapeHtml(report.location)}
+                            </small>
+
+                            <br>
+
+                            <small class="text-muted">
+                                <i class="bi bi-clock-history me-1"></i>
+                                Diperbarui: ${formatDate(report.updated_at)}
                             </small>
                         </div>
 
@@ -516,6 +524,22 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+
+function formatDate(value) {
+    if (!value) {
+        return '-';
+    }
+
+    const date = new Date(value);
+
+    return date.toLocaleString('id-ID', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}
 
 function escapeHtml(value) {
     if (value === null || value === undefined) {
