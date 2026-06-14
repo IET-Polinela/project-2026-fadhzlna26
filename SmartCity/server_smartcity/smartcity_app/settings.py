@@ -149,4 +149,8 @@ REST_FRAMEWORK = {
 # CORS Settings
 CORS_ALLOW_ALL_ORIGINS = True # Mengizinkan semua domain untuk mengakses API
 
+CSRF_TRUSTED_ORIGINS = [
+    'http://103.151.63.84:8001',
+]
+
 STATIC_ROOT = BASE_DIR / 'staticfiles'

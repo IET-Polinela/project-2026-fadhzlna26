@@ -1,7 +1,6 @@
-const API_BASE_URL = "http://103.151.63.84:8001";
+const API_BASE_URL = "http://103.151.63.84:8001/api";
 
 async function requestAPI(endpoint, method = "GET", bodyData = null) {
-
     const accessToken = localStorage.getItem("access_token");
 
     const headers = {
@@ -17,16 +16,19 @@ async function requestAPI(endpoint, method = "GET", bodyData = null) {
         headers: headers
     };
 
-    if (bodyData) {
+    if (bodyData !== null) {
         options.body = JSON.stringify(bodyData);
     }
 
-    const response = await fetch(
-        `${API_BASE_URL}${endpoint}`,
-        options
-    );
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
 
-    const data = await response.json();
+    let data = null;
+
+    try {
+        data = await response.json();
+    } catch (error) {
+        data = null;
+    }
 
     return {
         status: response.status,
