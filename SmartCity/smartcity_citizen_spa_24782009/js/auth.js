@@ -15,17 +15,25 @@ function setupLoginForm() {
         }
 
         try {
-            const result = await requestAPI('/token/', 'POST', {
+            const response = await requestAPI('/token/', 'POST', {
                 username: username,
                 password: password
             });
 
-            console.log('LOGIN STATUS:', result.status);
-            console.log('LOGIN DATA:', result.data);
+            let data = null;
 
-            if (result.status === 200) {
-                localStorage.setItem('access_token', result.data.access);
-                localStorage.setItem('refresh_token', result.data.refresh);
+            try {
+                data = await response.json();
+            } catch (error) {
+                data = null;
+            }
+
+            console.log('LOGIN STATUS:', response.status);
+            console.log('LOGIN DATA:', data);
+
+            if (response.status === 200 && data) {
+                localStorage.setItem('access_token', data.access);
+                localStorage.setItem('refresh_token', data.refresh);
 
                 alert('Login berhasil!');
                 window.location.hash = '#dashboard';
@@ -62,16 +70,24 @@ function setupRegisterForm() {
         }
 
         try {
-            const result = await requestAPI('/register/', 'POST', {
+            const response = await requestAPI('/register/', 'POST', {
                 username: username,
                 email: email,
                 password: password
             });
 
-            console.log('REGISTER STATUS:', result.status);
-            console.log('REGISTER DATA:', result.data);
+            let data = null;
 
-            if (result.status === 201 || result.status === 200) {
+            try {
+                data = await response.json();
+            } catch (error) {
+                data = null;
+            }
+
+            console.log('REGISTER STATUS:', response.status);
+            console.log('REGISTER DATA:', data);
+
+            if (response.status === 201 || response.status === 200) {
                 alert('Register berhasil! Silakan login.');
                 window.location.hash = '#login';
 
