@@ -14,16 +14,19 @@ async function requestAPI(endpoint, method = 'GET', body = null) {
     const options = {
         method: method,
         headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
+            'Content-Type': 'application/json'
         }
     };
+
+    if (token) {
+        options.headers['Authorization'] = `Bearer ${token}`;
+    }
 
     if (body !== null) {
         options.body = JSON.stringify(body);
     }
 
-    return await fetch(`http://127.0.0.1:8000/api${endpoint}`, options);
+    return await fetch(`http://103.151.63.84:8001/api${endpoint}`, options);
 }
 
 window.switchTab = function(tab) {
@@ -149,14 +152,6 @@ async function loadSummaryStats() {
             if (countVerified) countVerified.textContent = totalVerified;
             if (countProcess) countProcess.textContent = totalProcess;
             if (countDone) countDone.textContent = totalDone;
-
-            console.log('REKAP STATUS:', {
-                draft: totalDraft,
-                reported: totalReported,
-                verified: totalVerified,
-                in_progress: totalProcess,
-                resolved: totalDone
-            });
         } else {
             console.log('Gagal memuat rekap status. Status:', response.status);
         }
@@ -203,7 +198,6 @@ function renderList(reports, tab) {
         return `
             <div class="col-12">
                 <div class="card border-0 p-4 shadow-sm">
-
                     <div class="d-flex justify-content-between align-items-start mb-2">
                         <div>
                             <h5 class="fw-bold mb-1">${escapeHtml(report.title)}</h5>
@@ -256,7 +250,6 @@ function renderList(reports, tab) {
                     </small>
 
                     ${actionButton}
-
                 </div>
             </div>
         `;
