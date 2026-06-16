@@ -190,6 +190,7 @@ const routes = {
 function renderNavbar() {
     const navMenus = document.getElementById("nav-menus");
     const token = localStorage.getItem("access_token");
+    const username = localStorage.getItem("username") || "Citizen";
 
     if (!navMenus) return;
 
@@ -201,7 +202,7 @@ function renderNavbar() {
                     type="button"
                     data-bs-toggle="dropdown">
                     <i class="bi bi-person-circle me-2"></i>
-                    Citizen
+                    ${username}
                 </button>
 
                 <ul class="dropdown-menu dropdown-menu-end">
@@ -225,6 +226,17 @@ function renderNavbar() {
     }
 }
 
+
+function logout() {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    localStorage.removeItem("username");
+
+    alert("Logout berhasil!");
+
+    window.location.hash = "#login";
+    renderNavbar();
+}
 
 function logout() {
     localStorage.removeItem("access_token");

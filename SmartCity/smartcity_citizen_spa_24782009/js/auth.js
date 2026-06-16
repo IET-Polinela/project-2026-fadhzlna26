@@ -34,6 +34,7 @@ function setupLoginForm() {
             if (response.status === 200 && data) {
                 localStorage.setItem('access_token', data.access);
                 localStorage.setItem('refresh_token', data.refresh);
+                localStorage.setItem('username', username);
 
                 alert('Login berhasil!');
                 window.location.hash = '#dashboard';
